@@ -1449,7 +1449,8 @@ final class Deflate{
     int length = dictLength;
     int index=0;
 
-    if(dictionary == null || status != INIT_STATE)
+    if(dictionary == null ||
+       ((noheader!=0)? (strm.total_in!=0) : (status != INIT_STATE)))
       return Z_STREAM_ERROR;
 
     strm.adler=strm._adler.adler32(strm.adler, dictionary, 0, dictLength);

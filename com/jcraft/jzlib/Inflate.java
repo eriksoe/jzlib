@@ -291,11 +291,17 @@ final class Inflate{
   int inflateSetDictionary(ZStream z, byte[] dictionary, int dictLength){
     int index=0;
     int length = dictLength;
-    if(z==null || z.istate == null|| z.istate.mode != DICT0)
+    if (z==null || z.istate == null)
       return Z_STREAM_ERROR;
 
-    if(z._adler.adler32(1L, dictionary, 0, dictLength)!=z.adler){
-      return Z_DATA_ERROR;
+    if (nowrap != 0) {
+      if (z.istate.mode != BLOCKS) return Z_STREAM_ERROR;
+    } else {
+      if (z.istate.mode != DICT0) return Z_STREAM_ERROR;
+      
+      if (z._adler.adler32(1L, dictionary, 0, dictLength) != z.adler){
+        return Z_DATA_ERROR;
+      }
     }
 
     z.adler = z._adler.adler32(0, null, 0, 0);
